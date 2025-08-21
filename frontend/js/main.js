@@ -1,124 +1,92 @@
-// Reusable function to create the Three.js scene
+import * as THREE from 'three';
+import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+
+// Scene, Camera, Renderer (from original index.html)
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+renderer.domElement.style.zIndex = '-1';
 
 
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// Earth Sphere (from original index.html)
+const geometry = new THREE.SphereGeometry(2, 64, 64);
+const texture = new THREE.TextureLoader().load("https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg");
+const material = new THREE.MeshPhongMaterial({ map: texture });
+const earth = new THREE.Mesh(geometry, material);
+scene.add(earth);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // Smooth dragging
+controls.enableZoom = true; // Allow zoom
+controls.enablePan = false;
+controls.dampingFactor = 0.05; // Adjust damping for smoother rotation
+controls.rotateSpeed = 1.0; // Control rotation speed
+controls.zoomSpeed = 1.2; // Control zoom speed
+controls.target.set(0, 0, 0); // Focus on Earth's center
+controls.minDistance = 2; // Minimum zoom distance
+controls.maxDistance = 10; // Maximum zoom distance
 
-function createScene(containerId) {
-    const container = document.getElementById(containerId);
-    const width = window.innerWidth;
-    const height = window.innerHeight;
 
-    // Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    container.appendChild(renderer.domElement);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+// Lights (from original index.html)
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 3, 5).normalize();
+scene.add(light);
 
-    // Controls for interactivity
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+camera.position.z = 5;
 
-    // Resize handler
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    return { scene, camera, renderer, controls };
+// Animation Loop (from original index.html)
+function animate() {
+  requestAnimationFrame(animate);
+  earth.rotation.y += 0.002;
+  earth.rotation.x += 0.002; 
+  // spin Earth
+  controls.update();
+  renderer.render(scene, camera);
+  
 }
+animate();
 
-// Reusable function to create a simple 3D cake
-function createCake() {
-    const cakeGroup = new THREE.Group();
 
-    // Bottom layer (chocolate base)
-    const bottomGeometry = new THREE.CylinderGeometry(1.5, 1.5, 0.5, 32);
-    const bottomMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Brown
-    const bottomLayer = new THREE.Mesh(bottomGeometry, bottomMaterial);
-    bottomLayer.position.y = 0.25;
-    cakeGroup.add(bottomLayer);
 
-    // Middle layer (vanilla)
-    const middleGeometry = new THREE.CylinderGeometry(1.2, 1.2, 0.6, 32);
-    const middleMaterial = new THREE.MeshStandardMaterial({ color: 0xF5F5DC }); // Beige
-    const middleLayer = new THREE.Mesh(middleGeometry, middleMaterial);
-    middleLayer.position.y = 0.85;
-    cakeGroup.add(middleLayer);
 
-    // Top layer (frosting)
-    const topGeometry = new THREE.CylinderGeometry(0.9, 0.9, 0.4, 32);
-    const topMaterial = new THREE.MeshStandardMaterial({ color: 0xFFC0CB }); // Pink
-    const topLayer = new THREE.Mesh(topGeometry, topMaterial);
-    topLayer.position.y = 1.35;
-    cakeGroup.add(topLayer);
+// Resize (from original index.html)
 
-    // Decorations (small spheres as cherries)
-    const cherryGeometry = new THREE.SphereGeometry(0.15, 32, 32);
-    const cherryMaterial = new THREE.MeshStandardMaterial({ color: 0xFF0000 }); // Red
-    for (let i = 0; i < 5; i++) {
-        const cherry = new THREE.Mesh(cherryGeometry, cherryMaterial);
-        const angle = (i / 5) * Math.PI * 2;
-        cherry.position.set(Math.cos(angle) * 1.0, 1.55, Math.sin(angle) * 1.0);
-        cakeGroup.add(cherry);
-    }
-
-    // Candle
-    const candleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8, 32);
-    const candleMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFF00 }); // Yellow
-    const candle = new THREE.Mesh(candleGeometry, candleMaterial);
-    candle.position.y = 1.95;
-    cakeGroup.add(candle);
-
-    return cakeGroup;
+function handleWindowResize () {
+  camera.aspect = window.innerWidth /window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
+window.addEventListener("resize", handleWindowResize);
 
-// Animation loop
-function animate(renderer, scene, camera, controls, cake) {
-    requestAnimationFrame(() => animate(renderer, scene, camera, controls, cake));
 
-    // Continuous spin
-    cake.rotation.y += 0.005;
 
-    controls.update();
-    renderer.render(scene, camera);
-}
 
-// Intro animation (spin in)
-function introAnimation(cake, onComplete) {
-    let scale = 0;
-    const spinIn = () => {
-        if (scale < 1) {
-            scale += 0.02;
-            cake.scale.set(scale, scale, scale);
-            cake.rotation.y += 0.05; // Faster spin during intro
-            requestAnimationFrame(spinIn);
-        } else {
-            onComplete();
-        }
-    };
-    spinIn();
-}
 
-// Main initialization
-document.addEventListener('DOMContentLoaded', () => {
-    const { scene, camera, renderer, controls } = createScene('three-canvas');
-    const cake = createCake();
-    scene.add(cake);
-    camera.position.z = 5;
+// Code from index.js
+const w = window.innerWidth;
+const h = window.innerHeight;
 
-    // Start intro animation, then loop
-    introAnimation(cake, () => {
-        animate(renderer, scene, camera, controls, cake);
-    });
-});
+// const earthGroup = new THREE.Group();
+// earthGroup.rotation.z = -23.4 * Math.PI /180; 
+// scene.add(earthGroup);
+
+
+
+// const loader = new THREE.TextureLoader();
+// const geo = new THREE.IcosahedronGeometry(1, 12);
+// const mat = new THREE.MeshStandardMaterial({map: loader.load("./textures/00_earthmap1k.jpg")});
+
+// const earthMesh = new THREE.Mesh(geo, mat); 
+// earthGroup.add(earthMesh);
+
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
+scene.add(hemiLight);
+
+
+
+// THERE ARE THREE THINGS THREE JS NEEDS FOR SCENE 
+// 1 RENDERER 
+// 2 CAMERA 
+// 3 SCENE OBJECT

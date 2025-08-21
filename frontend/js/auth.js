@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      if (result.statuscode === 200) {
+      if (result.status_code === 200) {
         alert("✅ Registration successful!");
       } else {
         alert("❌ Registration failed: " + JSON.stringify(result.status));
