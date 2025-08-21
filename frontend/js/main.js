@@ -1,4 +1,9 @@
 // Reusable function to create the Three.js scene
+
+
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
 function createScene(containerId) {
     const container = document.getElementById(containerId);
     const width = window.innerWidth;

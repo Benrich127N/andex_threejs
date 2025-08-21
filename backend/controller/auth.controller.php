@@ -1,4 +1,9 @@
 <?php
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+
 require_once "../models/model.php";
 require_once "../helpers/Utility.helper.php";
 
@@ -20,7 +25,7 @@ class AuthController {
         $this->model = new Models();
         $this->utility = new UtilityHelper();
     }
-
+  
     /**
      * Register a new user
      * 

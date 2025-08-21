@@ -9,7 +9,9 @@
     <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- OrbitControls (updated CDN) -->
+
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
     <style>
         body { margin: 0; overflow: hidden; }
         #three-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; } /* Background canvas */
@@ -21,40 +23,48 @@
     <div id="three-canvas"></div>
 
     <!-- Sign Up Form -->
+  
     <div class="container form-container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow-lg">
                     <div class="card-body">
                         <h3 class="card-title text-center mb-4">Sign Up</h3>
-                        <form>
-                            <div class="mb-3">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                        </form>
+                           <form id="signupForm" method="POST">
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter your first name" required>
+    </div>
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter your last name" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+</form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Bootstrap JS CDN (for form interactions if needed) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- Custom JS -->
+     <script src="js/auth.js"></script>
     <script src="js/main.js"></script>
+
 </body>
 </html>
